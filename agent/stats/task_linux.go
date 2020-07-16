@@ -151,6 +151,7 @@ func (taskStat *StatsTask) processStatsStream() error {
 				}
 				return nil
 			}
+			seelog.Infof("Received bytes ----> %d", rawStat.networkStats.RxBytes)
 			if err := taskStat.StatsQueue.Add(rawStat); err != nil {
 				seelog.Warnf("Task [%s]: error converting stats: %v", taskArn, err)
 			}
