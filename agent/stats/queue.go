@@ -64,7 +64,9 @@ func (queue *Queue) Add(dockerStat *types.StatsJSON) error {
 
 	queue.setLastStat(dockerStat)
 	stat, err := dockerStatsToContainerStats(dockerStat)
-	seelog.Infof("Received bytes ----> %d", stat.networkStats.RxBytes)
+	if stat != nil {
+		seelog.Infof("Received bytes ----> %d", stat.networkStats.RxBytes)
+	}
 	if err != nil {
 		return err
 	}
