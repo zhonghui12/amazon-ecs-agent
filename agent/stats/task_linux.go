@@ -247,6 +247,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerP
 						Read: time.Now(),
 					},
 				}
+				seelog.Infof("Docker stats --> %d ",dockerStats)
 				statsC <- dockerStats
 			}
 		}()
