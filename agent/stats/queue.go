@@ -118,6 +118,7 @@ func (queue *Queue) add(rawStat *ContainerStats) {
 				seelog.Info("Rx Bytes per sec start")
 				seelog.Info(stat.NetworkStats.RxBytes)
 				seelog.Info(lastStat.NetworkStats.RxBytes)
+				seelog.Info(timeSinceLastStat)
 				seelog.Info("Rx bytes per sec ends")
 			}
 		}
