@@ -17,6 +17,7 @@ package stats
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -216,6 +217,11 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerP
 	errC := make(chan error)
 	statsC := make(chan *dockerstats.StatsJSON)
 
+	if len(deviceList) == 0 {
+		seelog.Info("Device list empty")
+		return errors.New("Device list empty"), nil
+	}
+
 	if numberOfContainers > 0 {
 		go func() {
 			defer close(statsC)
@@ -239,7 +245,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerP
 						return
 					}
 					netLinkStats := link.Attrs().Statistics
-					seelog.Info("Task: %s ,   Device : %s", taskStat.TaskMetadata.TaskArn, device)
+					seelog.Infof("Task: %s ,   Device : %s", taskStat.TaskMetadata.TaskArn, device)
 					networkStats[link.Attrs().Name] = linkStatsToDockerStats(netLinkStats, uint64(numberOfContainers))
 				}
 
