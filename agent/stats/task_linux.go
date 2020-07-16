@@ -215,6 +215,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerP
 
 	errC := make(chan error)
 	statsC := make(chan *dockerstats.StatsJSON)
+
 	if numberOfContainers > 0 {
 		go func() {
 			defer close(statsC)
@@ -238,6 +239,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerP
 						return
 					}
 					netLinkStats := link.Attrs().Statistics
+					seelog.Info("Task: %s ,   Device : %s", taskStat.TaskMetadata.TaskArn, device)
 					networkStats[link.Attrs().Name] = linkStatsToDockerStats(netLinkStats, uint64(numberOfContainers))
 				}
 
@@ -247,7 +249,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerP
 						Read: time.Now(),
 					},
 				}
-				seelog.Infof("Docker stats --> %d ",dockerStats)
+				seelog.Infof("Docker stats --> %d ", dockerStats)
 				statsC <- dockerStats
 			}
 		}()
