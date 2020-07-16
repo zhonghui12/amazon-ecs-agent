@@ -114,6 +114,11 @@ func (queue *Queue) add(rawStat *ContainerStats) {
 				txBytesSinceLastStat := float32(stat.NetworkStats.TxBytes - lastStat.NetworkStats.TxBytes)
 				stat.NetworkStats.RxBytesPerSecond = NanoSecToSec * (rxBytesSinceLastStat / timeSinceLastStat)
 				stat.NetworkStats.TxBytesPerSecond = NanoSecToSec * (txBytesSinceLastStat / timeSinceLastStat)
+
+				seelog.Info("Rx Bytes per sec start")
+				seelog.Info(stat.NetworkStats.RxBytes)
+				seelog.Info(lastStat.NetworkStats.RxBytes)
+				seelog.Info("Rx bytes per sec ends")
 			}
 		}
 
