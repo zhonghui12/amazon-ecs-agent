@@ -217,10 +217,10 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerP
 	errC := make(chan error)
 	statsC := make(chan *dockerstats.StatsJSON)
 
-	if len(deviceList) == 0 {
-		seelog.Info("Device list empty")
-		return errors.New("Device list empty"), nil
-	}
+	//if len(deviceList) == 0 {
+	//	seelog.Info("Device list empty")
+	//	return statsC, errC
+	//}
 
 	if numberOfContainers > 0 {
 		go func() {
@@ -229,6 +229,11 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerP
 			defer statPollTicker.Stop()
 			for range statPollTicker.C {
 				networkStats := make(map[string]dockerstats.NetworkStats, len(deviceList))
+				if len(deviceList) == 0 {
+					err := errors.New("device list empty")
+					errC <- err
+					return
+				}
 				for _, device := range deviceList {
 					var link netlinklib.Link
 					err := taskStat.nswrapperinterface.WithNetNSPath(fmt.Sprintf(ecscni.NetnsFormat, containerPID),
