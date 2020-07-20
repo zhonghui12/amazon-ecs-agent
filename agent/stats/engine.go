@@ -181,6 +181,7 @@ func (engine *DockerStatsEngine) addAndStartStatsContainer(containerID string) {
 	}
 	if task.IsNetworkModeAWSVPC() {
 		if statsTaskContainer != nil {
+			seelog.Infof("Starting stats collection for container id --> %s", containerID)
 			statsTaskContainer.StartStatsCollection()
 		} else {
 			seelog.Debugf("stats task container is nil, cannot start task stats collection")

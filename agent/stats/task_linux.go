@@ -214,6 +214,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats() (<-chan *types.StatsJSON, <-c
 			for range statPollTicker.C {
 				networkStats := make(map[string]dockerstats.NetworkStats, len(taskStat.TaskMetadata.DeviceName))
 				if len(taskStat.TaskMetadata.DeviceName) == 0 {
+					seelog.Info("Getting device list")
 					var err error
 					taskStat.TaskMetadata.DeviceName, err = taskStat.populateNIDeviceList(taskStat.TaskMetadata.ContainerPID)
 					if err != nil {
