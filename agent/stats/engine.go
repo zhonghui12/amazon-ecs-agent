@@ -179,8 +179,14 @@ func (engine *DockerStatsEngine) addAndStartStatsContainer(containerID string) {
 	if err != nil {
 		return
 	}
+
+	dockerContainer, errResolveContainer := engine.resolver.ResolveContainer(containerID)
+	if errResolveContainer != nil {
+		return
+	}
+
 	if task.IsNetworkModeAWSVPC() {
-		if statsTaskContainer != nil {
+		if statsTaskContainer != nil && dockerContainer.Container.Type == apicontainer.ContainerCNIPause {
 			seelog.Infof("Starting stats collection for container id --> %s", containerID)
 			statsTaskContainer.StartStatsCollection()
 		} else {
