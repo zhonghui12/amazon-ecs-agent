@@ -144,6 +144,8 @@ func (taskStat *StatsTask) processStatsStream() error {
 			}
 			if err := taskStat.StatsQueue.Add(rawStat); err != nil {
 				seelog.Warnf("Task [%s]: error converting stats: %v", taskArn, err)
+			}else {
+				seelog.Infof("Tried adding stats for task: %s", taskArn)
 			}
 		}
 
