@@ -237,7 +237,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats() (<-chan *types.StatsJSON, <-c
 					}
 					netLinkStats := link.Attrs().Statistics
 					seelog.Infof("Task: %s ,   Device : %s", taskStat.TaskMetadata.TaskArn, device)
-					networkStats[link.Attrs().Name] = linkStatsToDockerStats(netLinkStats, uint64(numberOfContainers))
+					networkStats[link.Attrs().Name] = linkStatsToDockerStats(netLinkStats, uint64(taskStat.TaskMetadata.NumberOfContainers))
 				}
 
 				dockerStats := &types.StatsJSON{
