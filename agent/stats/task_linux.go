@@ -17,7 +17,6 @@ package stats
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"time"
 
@@ -125,16 +124,7 @@ func (taskStat *StatsTask) collect() {
 
 func (taskStat *StatsTask) processStatsStream() error {
 	taskArn := taskStat.TaskMetadata.TaskArn
-	if len(taskStat.TaskMetadata.DeviceName) == 0 {
-		var err error
-		taskStat.TaskMetadata.DeviceName, err = taskStat.populateNIDeviceList(taskStat.TaskMetadata.ContainerPID)
-		if err != nil {
-			return err
-		}
-	}
-	awsvpcNetworkStats, errC := taskStat.getAWSVPCNetworkStats(taskStat.TaskMetadata.DeviceName,
-		taskStat.TaskMetadata.ContainerPID, taskStat.TaskMetadata.NumberContainers)
-
+	awsvpcNetworkStats, errC := taskStat.getAWSVPCNetworkStats()
 	returnError := false
 	for {
 		select {
@@ -211,32 +201,28 @@ func linkStatsToDockerStats(netLinkStats *netlinklib.LinkStatistics, numberOfCon
 	return networkStats
 }
 
-func (taskStat *StatsTask) getAWSVPCNetworkStats(deviceList []string, containerPID string,
-	numberOfContainers int) (<-chan *types.StatsJSON, <-chan error) {
+func (taskStat *StatsTask) getAWSVPCNetworkStats() (<-chan *types.StatsJSON, <-chan error) {
 
 	errC := make(chan error)
 	statsC := make(chan *dockerstats.StatsJSON)
 
-	//if len(deviceList) == 0 {
-	//	seelog.Info("Device list empty")
-	//	return statsC, errC
-	//}
-
-	if numberOfContainers > 0 {
+	if taskStat.TaskMetadata.NumberOfContainers > 0 {
 		go func() {
 			defer close(statsC)
 			statPollTicker := time.NewTicker(taskStat.metricPublishInterval)
 			defer statPollTicker.Stop()
 			for range statPollTicker.C {
-				networkStats := make(map[string]dockerstats.NetworkStats, len(deviceList))
-				if len(deviceList) == 0 {
-					err := errors.New("device list empty")
-					errC <- err
-					return
+				networkStats := make(map[string]dockerstats.NetworkStats, len(taskStat.TaskMetadata.DeviceName))
+				if len(taskStat.TaskMetadata.DeviceName) == 0 {
+					var err error
+					taskStat.TaskMetadata.DeviceName, err = taskStat.populateNIDeviceList(taskStat.TaskMetadata.ContainerPID)
+					if err != nil {
+						return err
+					}
 				}
-				for _, device := range deviceList {
+				for _, device := range taskStat.TaskMetadata.DeviceName {
 					var link netlinklib.Link
-					err := taskStat.nswrapperinterface.WithNetNSPath(fmt.Sprintf(ecscni.NetnsFormat, containerPID),
+					err := taskStat.nswrapperinterface.WithNetNSPath(fmt.Sprintf(ecscni.NetnsFormat, taskStat.TaskMetadata.ContainerPID),
 						func(ns.NetNS) error {
 							var linkErr error
 							if link, linkErr = taskStat.netlinkinterface.LinkByName(device); linkErr != nil {
