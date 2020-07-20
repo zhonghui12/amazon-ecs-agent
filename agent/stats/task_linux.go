@@ -206,7 +206,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats() (<-chan *types.StatsJSON, <-c
 	errC := make(chan error)
 	statsC := make(chan *dockerstats.StatsJSON)
 
-	if taskStat.TaskMetadata.NumberOfContainers > 0 {
+	if taskStat.TaskMetadata.NumberContainers > 0 {
 		go func() {
 			defer close(statsC)
 			statPollTicker := time.NewTicker(taskStat.metricPublishInterval)
@@ -217,7 +217,8 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats() (<-chan *types.StatsJSON, <-c
 					var err error
 					taskStat.TaskMetadata.DeviceName, err = taskStat.populateNIDeviceList(taskStat.TaskMetadata.ContainerPID)
 					if err != nil {
-						return err
+						errC <- err
+						return
 					}
 				}
 				for _, device := range taskStat.TaskMetadata.DeviceName {
@@ -237,7 +238,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats() (<-chan *types.StatsJSON, <-c
 					}
 					netLinkStats := link.Attrs().Statistics
 					seelog.Infof("Task: %s ,   Device : %s", taskStat.TaskMetadata.TaskArn, device)
-					networkStats[link.Attrs().Name] = linkStatsToDockerStats(netLinkStats, uint64(taskStat.TaskMetadata.NumberOfContainers))
+					networkStats[link.Attrs().Name] = linkStatsToDockerStats(netLinkStats, uint64(taskStat.TaskMetadata.NumberContainers))
 				}
 
 				dockerStats := &types.StatsJSON{
