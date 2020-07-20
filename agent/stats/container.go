@@ -131,11 +131,9 @@ func (container *StatsContainer) processStatsStream() error {
 			if err != nil {
 				return err
 			}
-
+			seelog.Info("Adding container stats for container :%s", dockerID)
 			if err := container.statsQueue.Add(rawStat); err != nil {
 				seelog.Warnf("Container [%s]: error converting stats for container: %v", dockerID, err)
-			} else {
-				seelog.Info("Adding container stats for container :%s", dockerID)
 			}
 		}
 	}

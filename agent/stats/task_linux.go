@@ -142,10 +142,9 @@ func (taskStat *StatsTask) processStatsStream() error {
 				}
 				return nil
 			}
+			seelog.Infof("Tried adding stats for task: %s", taskArn)
 			if err := taskStat.StatsQueue.Add(rawStat); err != nil {
 				seelog.Warnf("Task [%s]: error converting stats: %v", taskArn, err)
-			}else {
-				seelog.Infof("Tried adding stats for task: %s", taskArn)
 			}
 		}
 
@@ -250,7 +249,7 @@ func (taskStat *StatsTask) getAWSVPCNetworkStats() (<-chan *types.StatsJSON, <-c
 						Read: time.Now(),
 					},
 				}
-				seelog.Infof("Docker stats --> %d ", dockerStats)
+				seelog.Infof("Docker stats --> %d ", dockerStats.Networks)
 				statsC <- dockerStats
 			}
 		}()
