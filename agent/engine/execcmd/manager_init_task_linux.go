@@ -51,7 +51,7 @@ const (
 	SSMAgentWorkerBinName = "ssm-agent-worker"
 	SessionWorkerBinName  = "ssm-session-worker"
 
-	HostLogDir         = "/var/log/ecs/exec"
+	HostLogDir         = "/log/exec"
 	ContainerLogDir    = "/var/log/amazon/ssm"
 	ECSAgentExecLogDir = "/log/exec"
 
