@@ -2764,6 +2764,7 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 		expectedLogConfigFluentAddress string
 		expectedFluentdAsyncConnect    string
 		expectedSubSecondPrecision     string
+		expectedBufferLimit            string
 		expectedIPAddress              string
 		expectedPort                   string
 	}{
@@ -2774,6 +2775,7 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 			expectedLogConfigTag:           taskName + "-firelens-" + taskID,
 			expectedFluentdAsyncConnect:    strconv.FormatBool(true),
 			expectedSubSecondPrecision:     strconv.FormatBool(true),
+			expectedBufferLimit:            "",
 			expectedLogConfigFluentAddress: socketPathPrefix + filepath.Join(defaultConfig.DataDirOnHost, dataLogDriverPath, taskID, dataLogDriverSocketPath),
 			expectedIPAddress:              envVarBridgeMode,
 			expectedPort:                   envVarPort,
@@ -2785,6 +2787,7 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 			expectedLogConfigTag:           taskName + "-firelens-" + taskID,
 			expectedFluentdAsyncConnect:    strconv.FormatBool(true),
 			expectedSubSecondPrecision:     strconv.FormatBool(true),
+			expectedBufferLimit:            "",
 			expectedLogConfigFluentAddress: socketPathPrefix + filepath.Join(defaultConfig.DataDirOnHost, dataLogDriverPath, taskID, dataLogDriverSocketPath),
 			expectedIPAddress:              envVarBridgeMode,
 			expectedPort:                   envVarPort,
@@ -2796,6 +2799,7 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 			expectedLogConfigTag:           taskName + "-firelens-" + taskID,
 			expectedFluentdAsyncConnect:    strconv.FormatBool(true),
 			expectedSubSecondPrecision:     strconv.FormatBool(true),
+			expectedBufferLimit:            "",
 			expectedLogConfigFluentAddress: socketPathPrefix + filepath.Join(defaultConfig.DataDirOnHost, dataLogDriverPath, taskID, dataLogDriverSocketPath),
 			expectedIPAddress:              envVarAWSVPCMode,
 			expectedPort:                   envVarPort,
@@ -2821,6 +2825,7 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 					assert.Equal(t, tc.expectedLogConfigFluentAddress, hostConfig.LogConfig.Config["fluentd-address"])
 					assert.Equal(t, tc.expectedFluentdAsyncConnect, hostConfig.LogConfig.Config["fluentd-async-connect"])
 					assert.Equal(t, tc.expectedSubSecondPrecision, hostConfig.LogConfig.Config["fluentd-sub-second-precision"])
+					assert.Equal(t, tc.expectedBufferLimit, hostConfig.LogConfig.Config["fluentd-buffer-limit"])
 					assert.Contains(t, config.Env, tc.expectedIPAddress)
 					assert.Contains(t, config.Env, tc.expectedPort)
 				})

@@ -713,9 +713,10 @@ func TestInitializeFirelensResource(t *testing.T) {
 			shouldHaveInstanceID: true,
 			expectedLogOptions: map[string]map[string]string{
 				"logsender": {
-					"key1":        "value1",
-					"key2":        "value2",
-					"secret-name": "\"#{ENV['secret-name_0']}\"",
+					"key1":                    "value1",
+					"key2":                    "value2",
+					"log-driver-buffer-limit": "10000",
+					"secret-name":             "\"#{ENV['secret-name_0']}\"",
 				},
 			},
 		},
@@ -729,9 +730,10 @@ func TestInitializeFirelensResource(t *testing.T) {
 			shouldHaveInstanceID: true,
 			expectedLogOptions: map[string]map[string]string{
 				"logsender": {
-					"key1":        "value1",
-					"key2":        "value2",
-					"secret-name": "${secret-name_0}",
+					"key1":                    "value1",
+					"key2":                    "value2",
+					"log-driver-buffer-limit": "10000",
+					"secret-name":             "${secret-name_0}",
 				},
 			},
 		},
@@ -744,9 +746,10 @@ func TestInitializeFirelensResource(t *testing.T) {
 			}(),
 			expectedLogOptions: map[string]map[string]string{
 				"logsender": {
-					"key1":        "value1",
-					"key2":        "value2",
-					"secret-name": "\"#{ENV['secret-name_0']}\"",
+					"key1":                    "value1",
+					"key2":                    "value2",
+					"log-driver-buffer-limit": "10000",
+					"secret-name":             "\"#{ENV['secret-name_0']}\"",
 				},
 			},
 		},
@@ -761,9 +764,10 @@ func TestInitializeFirelensResource(t *testing.T) {
 			shouldDisableMetadata: true,
 			expectedLogOptions: map[string]map[string]string{
 				"logsender": {
-					"key1":        "value1",
-					"key2":        "value2",
-					"secret-name": "\"#{ENV['secret-name_0']}\"",
+					"key1":                    "value1",
+					"key2":                    "value2",
+					"log-driver-buffer-limit": "10000",
+					"secret-name":             "\"#{ENV['secret-name_0']}\"",
 				},
 			},
 		},
@@ -909,6 +913,8 @@ func TestCollectFirelensLogOptions(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "value1", containerToLogOptions["logsender"]["key1"])
 	assert.Equal(t, "value2", containerToLogOptions["logsender"]["key2"])
+	assert.Equal(t, "10000", containerToLogOptions["logsender"]["log-driver-buffer-limit"])
+	assert.Equal(t, "10000", LogDriverBufferLimit)
 }
 
 func TestCollectFirelensLogOptionsInvalidOptions(t *testing.T) {
@@ -1148,8 +1154,9 @@ func getFirelensTask(t *testing.T) *Task {
 		LogConfig: dockercontainer.LogConfig{
 			Type: firelensDriverName,
 			Config: map[string]string{
-				"key1": "value1",
-				"key2": "value2",
+				"key1":                    "value1",
+				"key2":                    "value2",
+				"log-driver-buffer-limit": "10000",
 			},
 		},
 	}
