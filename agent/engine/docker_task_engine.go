@@ -1280,13 +1280,16 @@ func getFirelensLogConfig(task *apitask.Task, container *apicontainer.Container,
 	tag := fmt.Sprintf(fluentTagDockerFormat, container.Name, taskID)
 	fluentd := socketPathPrefix + filepath.Join(cfg.DataDirOnHost, dataLogDriverPath, taskID, dataLogDriverSocketPath)
 	logConfig := hostConfig.LogConfig
+	seelog.Debugf("Buffer Limit Option: %s", apitask.FirelensLogDriverBufferLimitOption)
+	bufferLimit := logConfig.Config[apitask.FirelensLogDriverBufferLimitOption]
+	seelog.Debugf("Buffer Limit: %s", bufferLimit)
 	logConfig.Type = logDriverTypeFluentd
 	logConfig.Config = make(map[string]string)
 	logConfig.Config[logDriverTag] = tag
 	logConfig.Config[logDriverFluentdAddress] = fluentd
 	logConfig.Config[logDriverAsyncConnect] = strconv.FormatBool(true)
 	logConfig.Config[logDriverSubSecondPrecision] = strconv.FormatBool(true)
-	logConfig.Config[logDriverBufferLimit] = apitask.LogDriverBufferLimit
+	logConfig.Config[logDriverBufferLimit] = bufferLimit
 	seelog.Debugf("Applying firelens log config for container %s: %v", container.Name, logConfig)
 	return logConfig
 }

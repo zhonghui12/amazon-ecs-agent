@@ -2668,8 +2668,9 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 			LogConfig: dockercontainer.LogConfig{
 				Type: logDriverType,
 				Config: map[string]string{
-					"key1": "value1",
-					"key2": "value2",
+					"key1":                    "value1",
+					"key2":                    "value2",
+					"log-driver-buffer-limit": "10000",
 				},
 			},
 		}
@@ -2710,8 +2711,9 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 			LogConfig: dockercontainer.LogConfig{
 				Type: logDriverType,
 				Config: map[string]string{
-					"key1": "value1",
-					"key2": "value2",
+					"key1":                    "value1",
+					"key2":                    "value2",
+					"log-driver-buffer-limit": "10000",
 				},
 			},
 		}
@@ -2775,7 +2777,7 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 			expectedLogConfigTag:           taskName + "-firelens-" + taskID,
 			expectedFluentdAsyncConnect:    strconv.FormatBool(true),
 			expectedSubSecondPrecision:     strconv.FormatBool(true),
-			expectedBufferLimit:            "",
+			expectedBufferLimit:            "10000",
 			expectedLogConfigFluentAddress: socketPathPrefix + filepath.Join(defaultConfig.DataDirOnHost, dataLogDriverPath, taskID, dataLogDriverSocketPath),
 			expectedIPAddress:              envVarBridgeMode,
 			expectedPort:                   envVarPort,
@@ -2787,7 +2789,7 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 			expectedLogConfigTag:           taskName + "-firelens-" + taskID,
 			expectedFluentdAsyncConnect:    strconv.FormatBool(true),
 			expectedSubSecondPrecision:     strconv.FormatBool(true),
-			expectedBufferLimit:            "",
+			expectedBufferLimit:            "10000",
 			expectedLogConfigFluentAddress: socketPathPrefix + filepath.Join(defaultConfig.DataDirOnHost, dataLogDriverPath, taskID, dataLogDriverSocketPath),
 			expectedIPAddress:              envVarBridgeMode,
 			expectedPort:                   envVarPort,
@@ -2799,7 +2801,7 @@ func TestCreateContainerAddFirelensLogDriverConfig(t *testing.T) {
 			expectedLogConfigTag:           taskName + "-firelens-" + taskID,
 			expectedFluentdAsyncConnect:    strconv.FormatBool(true),
 			expectedSubSecondPrecision:     strconv.FormatBool(true),
-			expectedBufferLimit:            "",
+			expectedBufferLimit:            "10000",
 			expectedLogConfigFluentAddress: socketPathPrefix + filepath.Join(defaultConfig.DataDirOnHost, dataLogDriverPath, taskID, dataLogDriverSocketPath),
 			expectedIPAddress:              envVarAWSVPCMode,
 			expectedPort:                   envVarPort,
